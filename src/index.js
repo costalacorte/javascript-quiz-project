@@ -27,24 +27,42 @@ document.addEventListener("DOMContentLoaded", () => {
   const questions = [
     new Question("What is 2 + 2?", ["3", "4", "5", "6"], "4", 1),
     new Question(
-      "What is the capital of France?",
-      ["Miami", "Paris", "Oslo", "Rome"],
-      "Paris",
-      1
-    ),
-    new Question(
       "Who created JavaScript?",
       ["Plato", "Brendan Eich", "Lea Verou", "Bill Gates"],
       "Brendan Eich",
       2
     ),
-    new Question(
-      "What is the mass–energy equivalence equation?",
-      ["E = mc^2", "E = m*c^2", "E = m*c^3", "E = m*c"],
-      "E = mc^2",
-      3
-    ),
     // Add more questions here
+    new Question(
+      "Which of the following is a JavaScript data type?",
+      ["Boolean", "Integer", "Float", "Character"],
+      "Boolean",
+      0
+    ),
+    new Question(
+      "What keyword is used to declare a constant in JavaScript?",
+      ["var", "const", "let", "define"],
+      "const",
+      1
+    ),
+    new Question(
+      "Which method converts a JSON string into a JavaScript object?",
+      ["JSON.parse()", "JSON.stringify()", "parseJSON()", "toObject()"],
+      "JSON.parse()",
+      0
+    ),
+    new Question(
+      "Which of the following is NOT a looping structure in JavaScript?",
+      ["for", "foreach", "while", "do-while"],
+      "foreach",
+      1
+    ),
+    new Question(
+      "What is the output of typeof null in JavaScript?",
+      ["'object'", "'null'", "'undefined'", "'boolean'"],
+      "'object'",
+      0
+    ),
   ];
   const quizDuration = 120; // 120 seconds (2 minutes)
 
@@ -58,21 +76,37 @@ document.addEventListener("DOMContentLoaded", () => {
   /************  SHOW INITIAL CONTENT  ************/
 
   // Convert the time remaining in seconds to minutes and seconds, and pad the numbers with zeros if needed
-  const minutes = Math.floor(quiz.timeRemaining / 60)
+  /*const minutes = Math.floor(quiz.timeRemaining / 60)
     .toString()
     .padStart(2, "0");
   const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
 
   // Display the time remaining in the time remaining container
   const timeRemainingContainer = document.getElementById("timeRemaining");
-  timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+  timeRemainingContainer.innerText = `${minutes}:${seconds}`;*/
+
+  /************  TIMER  ************/
+  let timer;
+
+  timer = setInterval(function () {
+    quiz.timeRemaining--;
+    const minutes = Math.floor(quiz.timeRemaining / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+
+    // Display the time remaining in the time remaining container
+    const timeRemainingContainer = document.getElementById("timeRemaining");
+    timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+  }, 1000);
+
+  setTimeout(function () {
+    clearInterval(timer);
+    showResults();
+  }, 120000);
 
   // Show first question
   showQuestion();
-
-  /************  TIMER  ************/
-
-  let timer;
 
   /************  EVENT LISTENERS  ************/
 
@@ -85,11 +119,29 @@ document.addEventListener("DOMContentLoaded", () => {
   // showResults() - Displays the end view and the quiz results
 
   function showQuestion() {
+    clearInterval(timer);
     // If the quiz has ended, show the results
     if (quiz.hasEnded()) {
       showResults();
       return;
     }
+
+    timer = setInterval(function () {
+      quiz.timeRemaining--;
+      const minutes = Math.floor(quiz.timeRemaining / 60)
+        .toString()
+        .padStart(2, "0");
+      const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+
+      // Display the time remaining in the time remaining container
+      const timeRemainingContainer = document.getElementById("timeRemaining");
+      timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+    }, 1000);
+
+    setTimeout(function () {
+      clearInterval(timer);
+      showResults();
+    }, 120000);
 
     // Clear the previous question text and question choices
     questionContainer.innerText = "";
@@ -190,6 +242,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showResults() {
     // YOUR CODE HERE:
+    clearInterval(timer);
+
     //
     // 1. Hide the quiz view (div#quizView)
     quizView.style.display = "none";
@@ -206,6 +260,15 @@ document.addEventListener("DOMContentLoaded", () => {
     quizView.style.display = "block";
     quiz.currentQuestionIndex = 0;
     quiz.correctAnswers = 0;
+    quiz.timeRemaining = quizDuration;
+    const minutes = Math.floor(quiz.timeRemaining / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+
+    // Display the time remaining in the time remaining container
+    const timeRemainingContainer = document.getElementById("timeRemaining");
+    timeRemainingContainer.innerText = `${minutes}:${seconds}`;
     showQuestion();
   });
 });
